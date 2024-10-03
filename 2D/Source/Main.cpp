@@ -32,12 +32,12 @@ int main(int argc, char* argv[])
 
 		for (int i = 0; i < 100; i++)
 		{
-			int x = rand() % 200;
-			int y = rand() % 150;
+			int x = rand() % 400;
+			int y = rand() % 300;
 			framebuffer.DrawPoint(x, y, { 255, 255, 255, 255 });
 		}
 
-		framebuffer.DrawRect(10, 10, 10, 10, { 255, 255, 255, 255 });
+		framebuffer.DrawRect(150, 150, 60, 50, { 255, 255, 0, 255 });
 		framebuffer.Update();
 
 		renderer = framebuffer;
