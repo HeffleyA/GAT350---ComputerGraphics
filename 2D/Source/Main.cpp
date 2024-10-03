@@ -1,40 +1,50 @@
+#include "Renderer.h"
+#include "Framebuffer.h"
+
 #include <SDL.h>
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
-    // initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
-        std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
-        return 1;
-    }
+	Renderer renderer;
 
-    // create window
-    // returns pointer to window if successful or nullptr if failed
-    SDL_Window* window = SDL_CreateWindow("Game Engine",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        800, 600,
-        SDL_WINDOW_SHOWN);
-    if (window == nullptr)
-    {
-        std::cerr << "Error creating SDL window: " << SDL_GetError() << std::endl;
-        SDL_Quit();
-        return 1;
-    }
+	renderer.Initialize();
+	renderer.CreateWindow("Game Engine", 800, 600);
 
-    // create renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+	Framebuffer framebuffer(renderer, 400, 300);
 
-    while (true)
-    {
-        // clear screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
+	bool quit = false;
+	while (!quit)
+	{
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+		{
+			if (event.type == SDL_QUIT)
+			{
+				quit = true;
+			}
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				quit = true;
+			}
+		}
+		framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
-        // show screen
-        SDL_RenderPresent(renderer);
-    }
+		for (int i = 0; i < 100; i++)
+		{
+			int x = rand() % 200;
+			int y = rand() % 150;
+			framebuffer.DrawPoint(x, y, { 255, 255, 255, 255 });
+		}
 
-    return 0;
+		framebuffer.DrawRect(10, 10, 10, 10, { 255, 255, 255, 255 });
+		framebuffer.Update();
+
+		renderer = framebuffer;
+		//renderer.CopyFramebuffer(framebuffer);
+
+		SDL_RenderPresent(renderer.m_renderer);
+	}
+
+	return 0;
 }
