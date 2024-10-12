@@ -36,12 +36,6 @@ int main(int argc, char* argv[])
 		Image image;
 		image.Load("Lake.jpg");
 
-		Image image2;
-		image.Load("Lake.jpg");
-
-		Image image3;
-		image.Load("Lake.jpg");
-
 		for (int i = 0; i < 10; i++)
 		{
 			int x1 = rand() % framebuffer.m_width;
@@ -58,30 +52,33 @@ int main(int argc, char* argv[])
 			//framebuffer.DrawCircle(x1, y1, r, { 255, 255, 255, 255 });
 		}
 
+
 		framebuffer.DrawImage(100, 100, image);
-		framebuffer.DrawImage(200, 200, image2);
-		framebuffer.DrawImage(300, 300, image3);
 
-		int mx, my;
-		SDL_GetMouseState(&mx, &my);
 
-		framebuffer.DrawCubicCurve(100, 200, 100, 100, mx, my, 300, 200, { 255, 255, 255, 255 });
+		//int mx, my;
+		//SDL_GetMouseState(&mx, &my);
 
-		int ticks = SDL_GetTicks();
-		float time = ticks * 0.001f;
-		float t = std::abs(std::sin(time));
-		int x, y;
-		CubicPoint(100, 200, 100, 100, mx, my, 300, 200, t, x, y);
-		framebuffer.DrawRect(x - 20, y - 20, 60, 50, { 255, 255, 0, 255 });
+		//framebuffer.DrawCubicCurve(100, 200, 100, 100, mx, my, 300, 200, { 255, 255, 255, 255 });
+
+		//int ticks = SDL_GetTicks();
+		//float time = ticks * 0.001f;
+		//float t = std::abs(std::sin(time));
+		//int x, y;
+		//CubicPoint(100, 200, 100, 100, mx, my, 300, 200, t, x, y);
+		//framebuffer.DrawRect(x - 20, y - 20, 60, 50, { 255, 255, 0, 255 });
 
 
 		//framebuffer.DrawCircle(100, 100, 30, { 255, 255, 255, 255 });
-
 		//framebuffer.DrawTriangle(100, 200, 50, 200, 50, 100, {255, 255, 255, 255});
-
 		//framebuffer.DrawLine(300, 200, 350, 250, { 255, 255, 255, 255 });
-
-		//PostProcess::Brightness(framebuffer.m_buffer, -245);
+		PostProcess::Invert(framebuffer.m_buffer);
+		PostProcess::Monochrome(framebuffer.m_buffer);
+		PostProcess::Brightness(framebuffer.m_buffer, 50);
+		PostProcess::ColorBalance(framebuffer.m_buffer, 150, -50, -50);
+		PostProcess::Noise(framebuffer.m_buffer, 80);
+		PostProcess::Noise(framebuffer.m_buffer, 150);
+		PostProcess::Posterize(framebuffer.m_buffer, 6);
 
 		framebuffer.Update();
 
