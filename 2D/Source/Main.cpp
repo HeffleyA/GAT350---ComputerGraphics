@@ -6,6 +6,8 @@
 
 #include <SDL.h>
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -18,6 +20,9 @@ int main(int argc, char* argv[])
 
 	Image image;
 	image.Load("Lake.jpg");
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
 
 	bool quit = false;
 	while (!quit)
