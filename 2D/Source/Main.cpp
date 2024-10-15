@@ -16,6 +16,9 @@ int main(int argc, char* argv[])
 
 	Framebuffer framebuffer(renderer, 400, 300);
 
+	Image image;
+	image.Load("Lake.jpg");
+
 	bool quit = false;
 	while (!quit)
 	{
@@ -33,8 +36,8 @@ int main(int argc, char* argv[])
 		}
 		framebuffer.Clear(color_t{ 0, 0, 0, 255 });
 
-		Image image;
-		image.Load("Lake.jpg");
+		SetBlendMode(BlendMode::Normal);
+		framebuffer.DrawImage(100, 100, image);
 
 		for (int i = 0; i < 10; i++)
 		{
@@ -52,9 +55,14 @@ int main(int argc, char* argv[])
 			//framebuffer.DrawCircle(x1, y1, r, { 255, 255, 255, 255 });
 		}
 
+		//SetBlendMode(BlendMode::Alpha);
+		//framebuffer.DrawImage(100, 100, imageAlpha);
 
-		framebuffer.DrawImage(100, 100, image);
-
+		//PostProcess::BoxBlur(image.m_buffer, 50, 50);
+		//PostProcess::GaussianBlur(image.m_buffer, 50, 50);
+		//PostProcess::Sharpen(image.m_buffer, 50, 50);
+		//PostProcess::Edge(image.m_buffer, 50, 50, 100);
+		//PostProcess::Emboss(image.m_buffer, 50, 50);
 
 		//int mx, my;
 		//SDL_GetMouseState(&mx, &my);
@@ -72,13 +80,16 @@ int main(int argc, char* argv[])
 		//framebuffer.DrawCircle(100, 100, 30, { 255, 255, 255, 255 });
 		//framebuffer.DrawTriangle(100, 200, 50, 200, 50, 100, {255, 255, 255, 255});
 		//framebuffer.DrawLine(300, 200, 350, 250, { 255, 255, 255, 255 });
-		PostProcess::Invert(framebuffer.m_buffer);
-		PostProcess::Monochrome(framebuffer.m_buffer);
-		PostProcess::Brightness(framebuffer.m_buffer, 50);
-		PostProcess::ColorBalance(framebuffer.m_buffer, 150, -50, -50);
-		PostProcess::Noise(framebuffer.m_buffer, 80);
-		PostProcess::Noise(framebuffer.m_buffer, 150);
-		PostProcess::Posterize(framebuffer.m_buffer, 6);
+		
+#pragma region post_process
+		//PostProcess::Invert(framebuffer.m_buffer);
+		//PostProcess::Monochrome(framebuffer.m_buffer);
+		//PostProcess::Brightness(framebuffer.m_buffer, 50);
+		//PostProcess::ColorBalance(framebuffer.m_buffer, 150, -50, -50);
+		//PostProcess::Noise(framebuffer.m_buffer, 80);
+		//PostProcess::Noise(framebuffer.m_buffer, 150);
+		//PostProcess::Posterize(framebuffer.m_buffer, 6);
+#pragma endregion
 
 		framebuffer.Update();
 

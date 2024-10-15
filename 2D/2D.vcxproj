@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Color.cpp" />
     <ClCompile Include="Source\Framebuffer.cpp" />
     <ClCompile Include="Source\Image.cpp" />
     <ClCompile Include="Source\Main.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Source\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Color.h" />
     <ClInclude Include="Source\Framebuffer.h" />
     <ClInclude Include="Source\Image.h" />
     <ClInclude Include="Source\MathUtils.h" />
