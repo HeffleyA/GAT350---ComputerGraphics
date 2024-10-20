@@ -141,9 +141,9 @@ namespace PostProcess
 			}
 
 			color_t& color = buffer[i];
-			color.r = static_cast<uint8_t>(r) / 9;
-			color.g = static_cast<uint8_t>(g) / 9;
-			color.b = static_cast<uint8_t>(b) / 9;
+			color.r = static_cast<uint8_t>(r / 9);
+			color.g = static_cast<uint8_t>(g / 9);
+			color.b = static_cast<uint8_t>(b / 9);
 		}
 	}
 
@@ -183,9 +183,9 @@ namespace PostProcess
 			}
 
 			color_t& color = buffer[i];
-			color.r = static_cast<uint8_t>(r) / 16;
-			color.g = static_cast<uint8_t>(g) / 16;
-			color.b = static_cast<uint8_t>(b) / 16;
+			color.r = static_cast<uint8_t>(r / 16);
+			color.g = static_cast<uint8_t>(g / 16);
+			color.b = static_cast<uint8_t>(b / 16);
 		}
 	}
 
@@ -263,16 +263,16 @@ namespace PostProcess
 			{
 				for (int ix = 0; ix < 3; ix++)
 				{
-					color_t pixel = source[(x + ix - 1) + (y + iy - 1) * width];
+					color_t pixel = source[(x + ix) + (y + iy) * width];
 
-					h += pixel.r * hk[iy][ix];
-					v += pixel.r * vk[iy][ix];
+					h += pixel.r * hk[1 + iy][1 + ix];
+					v += pixel.r * vk[1 + iy][1 + ix];
 				}
 			}
 
-			int m = std::sqrt(h * h + v * v);
-			m = (m >= threshold) ? m : 0;
-			uint8_t c = std::clamp(m, 0, 255);
+			int m = std::sqrt((h * h) + (v * v));
+			m = (m > threshold) ? m : 0;
+			uint8_t c = (m < 0) ? 0 : ((m > 255) ? 255 : m);
 
 			color_t& color = buffer[i];
 			color.r = c;
