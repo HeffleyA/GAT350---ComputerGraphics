@@ -21,10 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9747c9aa-cf06-4316-bf0f-aacd24d1a970}</ProjectGuid>
+    <ProjectGuid>{93C3ABBF-EE4F-433D-A534-9B155A6E657C}</ProjectGuid>
     <RootNamespace>My2D</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>SoftwareRenderer</ProjectName>
+    <ProjectName>RayTracer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -168,6 +168,7 @@
     <ClInclude Include="Source\Model.h" />
     <ClInclude Include="Source\PostProcess.h" />
     <ClInclude Include="Source\Random.h" />
+    <ClInclude Include="Source\Ray.h" />
     <ClInclude Include="Source\Renderer.h" />
     <ClInclude Include="Source\Transform.h" />
   </ItemGroup>
