@@ -27,7 +27,7 @@ bool Renderer::CreateWindow(std::string title, int width, int height)
 
     // create window
     // returns pointer to window if successful or nullptr if failed
-    m_window = SDL_CreateWindow("Game Engine",
+    m_window = SDL_CreateWindow("Ray Tracer",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         800, 600,
         SDL_WINDOW_SHOWN);

@@ -1,42 +1,41 @@
 #include "Camera.h"
+#include "MathUtils.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 void Camera::SetView(const glm::vec3& eye, const glm::vec3& target, const glm::vec3& up)
 {
-	m_view = glm::lookAt(eye, target, up);
+	m_eye = eye;
+
+	// create camera axis
+	m_forward = glm::normalize(eye - target);
+	m_right = glm::normalize(Cross(up, m_forward));
+	m_up = Cross(m_forward, m_right);
+
+	CalculateViewPlane();
 }
 
-void Camera::SetProjection(float fov, float aspect, float near, float far)
+ray_t Camera::GetRay(const glm::vec2& point) const
 {
-	m_projection = glm::perspective(glm::radians(fov), aspect, near, far);
+	ray_t ray;
+
+	ray.origin = m_eye;
+	ray.direction = (m_lowerLeft + (m_horizontal * point.x) + (m_vertical * point.y)) - m_eye;
+
+	return ray;
 }
 
-glm::vec3 Camera::ModelToView(const glm::vec3& position) const
+void Camera::CalculateViewPlane()
 {
-	// convert point from world space to view space
-	return m_view * glm::vec4{ position, 1 };
-}
+	float theta = glm::radians(m_fov);
 
-glm::vec3 Camera::ViewToProjection(const glm::vec3& position) const
-{
-	// convert point from view space to projection space
-	return m_projection * glm::vec4{ position, 1 };
-}
+	//tan = o / a
 
-glm::ivec2 Camera::ToScreen(const glm::vec3& position) const
-{
-	// convert point from view space to clip space (projection)
-	glm::vec4 clip = m_projection * glm::vec4{ position, 1 };
-	// prevent / 0
-	if (clip.w == 0) return glm::ivec2{ -1, -1 };
+	float halfHeight = glm::tan(theta * 0.5f);
+	float height = halfHeight * 2;
+	float width = height * m_aspectRatio;
 
-	// convert projection space to ndc (-1 <-> 1)
-	glm::vec3 ndc = clip / clip.w;
-	// don't draw if outside near and far
-	if (ndc.z < -1 || ndc.z > 1) return glm::ivec2{ -1, -1 };
+	m_horizontal = m_right * width;
+	m_vertical = m_up * height;
 
-	float x = (ndc.x + 1) * (m_width * 0.5f);
-	float y = (1 - ndc.y) * (m_height * 0.5f);
-
-	return glm::ivec2(x, y);
+	m_lowerLeft = m_eye - (m_horizontal * 0.5f) - (m_vertical * 0.5f) + m_forward;
 }

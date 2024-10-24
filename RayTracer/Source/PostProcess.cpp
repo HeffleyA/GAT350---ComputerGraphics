@@ -270,7 +270,7 @@ namespace PostProcess
 				}
 			}
 
-			int m = std::sqrt((h * h) + (v * v));
+			int m = (int)std::sqrt((h * h) + (v * v));
 			m = (m > threshold) ? m : 0;
 			uint8_t c = (m < 0) ? 0 : ((m > 255) ? 255 : m);
 

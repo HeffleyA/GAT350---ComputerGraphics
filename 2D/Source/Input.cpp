@@ -42,6 +42,9 @@ void Input::Update()
 	// 010 <- button mask
 	// 000
 	m_prevMouseButtonState = m_mouseButtonState;
+	m_mouseButtonState[0] = buttonState & SDL_BUTTON_LMASK;
+	m_mouseButtonState[1] = buttonState & SDL_BUTTON_MMASK;
+	m_mouseButtonState[2] = buttonState & SDL_BUTTON_RMASK;
 }
 
 void Input::SetRelativeMode(bool relative)

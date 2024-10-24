@@ -32,30 +32,47 @@ int main(int argc, char* argv[])
 
 	SetBlendMode(BlendMode::Normal);
 
+	Framebuffer framebuffer(renderer, 800, 600);
+
 	Camera camera(renderer.m_width, renderer.m_height);
 	camera.SetView(glm::vec3{ 0, 0, -50 }, glm::vec3{ 0 });
 	camera.SetProjection(60.0f, 800.0f / 600, 0.1f, 200.0f);
 	Transform cameraTransform{ { 0, 0, -20 } };
 
-	Framebuffer framebuffer(renderer, 800, 600);
+	std::shared_ptr<Model> model1 = std::make_shared<Model>();
+	model1->Load("Airplane.obj");
+	//model1->SetColor({ 255, 255, 255, 255 });
 
-	std::shared_ptr<Model> model = std::make_shared<Model>();
-	model->Load("torus.obj");
-	model->SetColor({ 0, 255, 0, 255 });
+	std::shared_ptr<Model> model2 = std::make_shared<Model>();
+	model2->Load("duck.obj");
+	//model2->SetColor({ 0, 0, 255, 255 });
+
+	std::shared_ptr<Model> model3 = std::make_shared<Model>();
+	model3->Load("AW101.obj");
 
 	std::vector<std::unique_ptr<Actor>> actors;
 
-	for (int i = 0; i < 1; i++)
-	{
-		Transform transform{ { randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f), randomf(-10.0f, 10.0f)}, glm::vec3{0, 0, 0}, glm::vec3{1}};
-		std::unique_ptr<Actor> actor = std::make_unique<Actor>(transform, model);
-		actor->SetColor({ (uint8_t)random(256), (uint8_t)random(256), (uint8_t)random(256), (uint8_t)random(256) });
-		actors.push_back(std::move(actor));
-	}
+	//for (int i = 0; i < 1; i++)
+	//{
+		Transform transform1{ { 0, 0, 0 }, glm::vec3{45, 0, 0}, glm::vec3{1}};
+		std::unique_ptr<Actor> actor1 = std::make_unique<Actor>(transform1, model1);
+		actor1->SetColor({ 255, 255, 255, 255 });
+		actors.push_back(std::move(actor1));
+
+		Transform transform2{ { 0, -50, 50 }, glm::vec3{-45, 180, 0}, glm::vec3{0.5} };
+		std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2);
+		actor2->SetColor({ 255, 255, 0, 255 });
+		actors.push_back(std::move(actor2));
+
+		Transform transform3{ { 0, -25, 25 }, glm::vec3{0, 90, 0}, glm::vec3{0.25} };
+		std::unique_ptr<Actor> actor3 = std::make_unique<Actor>(transform3, model3);
+		actor3->SetColor({ 0, 0, 0, 255 });
+		actors.push_back(std::move(actor3));
+	//}
 
 #pragma region imageLoad
-	//Image image;
-	//image.Load("Lake.jpg");
+	Image image;
+	image.Load("clouds.jpeg");
 
 	//Image imageAlpha;
 	//imageAlpha.Load("colors.png");
@@ -99,8 +116,8 @@ int main(int argc, char* argv[])
 			//framebuffer.DrawCircle(x1, y1, r, { 255, 255, 255, 255 });
 		//}
 	
-		//SetBlendMode(BlendMode::Normal);
-		//framebuffer.DrawImage(340, 250, image);
+		SetBlendMode(BlendMode::Normal);
+		framebuffer.DrawImage(0, 0, image);
 
 		//SetBlendMode(BlendMode::Alpha);
 		//framebuffer.DrawImage(80, 100, imageAlpha);
@@ -149,8 +166,8 @@ int main(int argc, char* argv[])
 			if (input.GetKeyDown(SDL_SCANCODE_W)) direction.z = 1;
 			if (input.GetKeyDown(SDL_SCANCODE_S)) direction.z = -1;
 
-			cameraTransform.rotation.y = input.GetMouseRelative().x * 0.5f;
-			cameraTransform.rotation.x = input.GetMouseRelative().y * 0.5f;
+			cameraTransform.rotation.y += input.GetMouseRelative().x * 0.25f;
+			cameraTransform.rotation.x += input.GetMouseRelative().y * 0.25f;
 
 			glm::vec3 offset = cameraTransform.GetMatrix() * glm::vec4{ direction, 0 };
 
