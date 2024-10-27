@@ -48,3 +48,9 @@ inline glm::vec3 Cross(const glm::vec3& v1, const glm::vec3& v2)
 
 	return result;
 }
+
+inline bool approximately(float value1, float value2)
+{
+	// check if the difference between the values is less than epsilon
+	return ((float)std::abs(value2 - value1) < FLT_EPSILON);
+}
