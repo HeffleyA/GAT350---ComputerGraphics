@@ -7,7 +7,7 @@ void Camera::SetView(const glm::vec3& eye, const glm::vec3& target, const glm::v
 	m_eye = eye;
 
 	// create camera axis
-	m_forward = glm::normalize(eye - target);
+	m_forward = glm::normalize(target - eye);
 	m_right = glm::normalize(Cross(up, m_forward));
 	m_up = Cross(m_forward, m_right);
 

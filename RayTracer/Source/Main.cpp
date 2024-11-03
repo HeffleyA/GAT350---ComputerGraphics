@@ -12,6 +12,7 @@
 #include "Random.h"
 #include "Tracer.h"
 #include "Scene.h"
+#include "Triangle.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -21,6 +22,7 @@
 
 int main(int argc, char* argv[])
 {
+	srand((unsigned int)time(NULL));
 	//initialize
 	Time time;
 
@@ -33,38 +35,53 @@ int main(int argc, char* argv[])
 	Framebuffer framebuffer(renderer, renderer.m_width, renderer.m_height);
 
 	Camera camera{ 70.0f, framebuffer.m_width / (float)framebuffer.m_height };
-	camera.SetView({ 0, 0, -20 }, { 0, 0, 0 });
+	camera.SetView({ 0, 5, -5 }, { 0, 0, 0 });
 
 	Scene scene;
 
 	std::vector<std::shared_ptr<Material>> materials;
 
-	std::shared_ptr<Material> gray = std::make_shared<Material>(color3_t{ 0.5f });
-	std::shared_ptr<Material> red = std::make_shared<Material>(color3_t{ 1, 0, 0 });
-	std::shared_ptr<Material> blue = std::make_shared<Material>(color3_t{ 0, 0, 1 });
-	std::shared_ptr<Material> green = std::make_shared<Material>(color3_t{ 0, 1, 0 });
-	std::shared_ptr<Material> yellow = std::make_shared<Material>(color3_t{ 1, 1, 0 });
+	std::shared_ptr<Material> gray = std::make_shared<Lambertian>(color3_t{ 0.5f });
+	std::shared_ptr<Material> red = std::make_shared<Emissive>(color3_t{ 1, 0, 0 }, 10.0f);
+	std::shared_ptr<Material> blue = std::make_shared<Metal>(color3_t{ 0, 0, 1 }, 2.5f);
+	std::shared_ptr<Material> green = std::make_shared<Lambertian>(color3_t{ 0, 1, 0 });
+	std::shared_ptr<Material> yellow = std::make_shared<Metal>(color3_t{ 1, 1, 0 }, 0.1f);
+	std::shared_ptr<Material> white = std::make_shared<Dielectric>(color3_t{ 1, 1, 1 }, 1.33f);
 
 	materials.push_back(red);
 	materials.push_back(blue);
 	materials.push_back(green);
 	materials.push_back(yellow);
+	materials.push_back(white);
 
-	for (int i = 0; i < 10; i++)
-	{
-		std::shared_ptr<Material> random_material = materials[random(materials.size())];
+	//auto plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray);
+	//scene.AddObject(std::move(plane));
 
-		auto sphere = std::make_unique<Sphere>(random(glm::vec3{ -10 }, glm::vec3{ 10 }), randomf(1, 5), random_material);
-		scene.AddObject(std::move(sphere));
-	}
+	//auto triangle = std::make_unique<Triangle>(glm::vec3{ -10, 0, 0 }, glm::vec3{ 0, 10, 0 }, glm::vec3{ 10, 0, 0 }, blue);
+	//scene.AddObject(std::move(triangle));
 
-	std::shared_ptr<Material> material = std::make_shared<Material>(color3_t{ 1, 0, 0 });
-	auto object = std::make_unique<Sphere>(glm::vec3{ 0, 0, 40 }, 5.0f, material);
-	scene.AddObject(std::move(object));
+	auto model = std::make_unique<Model>(green);
+	model->Load("cube-2.obj");
+	scene.AddObject(std::move(model));
 
-	//std::shared_ptr<Material> material1 = std::make_shared<Material>(color3_t{ 0.5, 0, 0.5 });
-	auto plane = std::make_unique<Plane>(glm::vec3{ 0, -5, 0 }, glm::vec3{ 0, 1, 0 }, gray);
-	scene.AddObject(std::move(plane));
+	//std::shared_ptr<Material> material = std::make_shared<Lambertian>(color3_t{ 1, 0, 0 });
+	//auto object = std::make_unique<Sphere>(glm::vec3{ 0, 0, 40 }, 5.0f, material);
+	//scene.AddObject(std::move(object));
+
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	std::shared_ptr<Material> random_material = materials[random((unsigned int)materials.size())];
+
+		//auto sphere = std::make_unique<Sphere>(random(glm::vec3{ -10 }, glm::vec3{ 10 }), randomf(1, 5), random_material);
+	//	scene.AddObject(std::move(sphere));
+	//}
+
+	//auto sphere = std::make_unique<Sphere>(glm::vec3{ 0.0f }, 2.0f, red);
+	//scene.AddObject(std::move(sphere));
+
+	//framebuffer.Clear(ColorConvert(color4_t{ 0, 0.25f, 0, 1 }));
+	scene.Render(framebuffer, camera, 10, 5);
+	framebuffer.Update();
 
 	bool quit = false;
 	while (!quit)
@@ -83,12 +100,6 @@ int main(int argc, char* argv[])
 				quit = true;
 			}
 		}
-
-		framebuffer.Clear(ColorConvert(color4_t{ 0, 0.25f, 0, 1 }));
-
-		scene.Render(framebuffer, camera);
-
-		framebuffer.Update();
 
 		// show screen
 		renderer = framebuffer;
