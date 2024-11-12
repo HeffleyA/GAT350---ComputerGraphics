@@ -1,19 +1,19 @@
 #include "Material.h"
 #include "Random.h"
 
-bool Lambertian::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scatter)
+bool Lambertian::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scatter) const
 {
-	//scatter.origin = raycastHit.point;
-	//scatter.direction = raycastHit.normal + randomOnUnitSphere();
-	glm::vec3 direction = raycastHit.normal + randomOnUnitSphere();
-	scatter = ray_t{ raycastHit.point, direction };
+	scatter.origin = raycastHit.point;
+	scatter.direction = raycastHit.normal + randomOnUnitSphere();
+	//glm::vec3 direction = raycastHit.normal + randomOnUnitSphere();
+	//scatter = ray_t{ raycastHit.point, direction };
 
 	attenuation = m_albedo;
 
 	return true;
 }
 
-bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scattered)
+bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scattered) const
 {
 	glm::vec3 reflected = Reflect(ray.direction, glm::normalize(raycastHit.normal));  //<Reflect() function with raycast hit direction and normal>
 
@@ -23,10 +23,10 @@ bool Metal::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& 
 	attenuation = m_albedo;
 
 	// check that reflected ray is going away from surface normal (dot product > 0)
-	return Dot(scattered.direction, raycastHit.normal) > 0; //<dot product of scattered ray direction and raycast hit normal> > 0;
+	return glm::dot(scattered.direction, raycastHit.normal) > 0; //<dot product of scattered ray direction and raycast hit normal> > 0;
 }
 
-bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scattered)
+bool Dielectric::Scatter(const ray_t& ray, const raycastHit_t& raycastHit, color3_t& attenuation, ray_t& scattered) const
 {
 	glm::vec3 outNormal;
 	float ni_over_nt;

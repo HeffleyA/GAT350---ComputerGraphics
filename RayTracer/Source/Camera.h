@@ -10,6 +10,7 @@ public:
 	Camera(float fov, float aspectRatio) : m_fov{ fov }, m_aspectRatio{ aspectRatio } {}
 
 	void SetView(const glm::vec3& eye, const glm::vec3& target, const glm::vec3& up = glm::vec3{0, 1, 0});
+	void SetFOV(float fov);
 	ray_t GetRay(const glm::vec2& point) const;
 
 private:

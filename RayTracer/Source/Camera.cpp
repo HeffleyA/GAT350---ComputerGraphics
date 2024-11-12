@@ -14,6 +14,11 @@ void Camera::SetView(const glm::vec3& eye, const glm::vec3& target, const glm::v
 	CalculateViewPlane();
 }
 
+void Camera::SetFOV(float fov)
+{
+	m_fov = fov;
+}
+
 ray_t Camera::GetRay(const glm::vec2& point) const
 {
 	ray_t ray;

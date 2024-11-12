@@ -17,6 +17,7 @@ public:
 
 	float GetTime() const { return m_time; }
 	float GetDeltaTime() const { return m_deltaTime; }
+	float GetElapsedTime() const;
 
 private:
 	float m_time{ 0 };
