@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Actor.h"
 #include "Random.h"
+#include "Shader.h"
 
 #include <SDL.h>
 #include <iostream>
@@ -39,44 +40,50 @@ int main(int argc, char* argv[])
 	camera.SetProjection(60.0f, 800.0f / 600, 0.1f, 200.0f);
 	Transform cameraTransform{ { 0, 0, -20 } };
 
+	// shader
+	VertexShader::uniforms.view = camera.GetView();
+	VertexShader::uniforms.projection = camera.GetProjection();
+	VertexShader::uniforms.ambient = color3_t{ 0.01f };
+	VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
+	VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
+	VertexShader::uniforms.light.color = color3_t{ 1 }; // white light
+
+	Shader::framebuffer = &framebuffer;
+
 	std::shared_ptr<Model> model1 = std::make_shared<Model>();
-	model1->Load("Airplane.obj");
-	//model1->SetColor({ 255, 255, 255, 255 });
+	model1->Load("Models/Cube.obj");
+	model1->SetColor({ 0, 0, 1, 1 });
 
-	std::shared_ptr<Model> model2 = std::make_shared<Model>();
-	model2->Load("duck.obj");
-	//model2->SetColor({ 0, 0, 255, 255 });
+#pragma region ModelLoad
+	//std::shared_ptr<Model> model2 = std::make_shared<Model>();
+	//model2->Load("Models/duck.obj");
 
-	std::shared_ptr<Model> model3 = std::make_shared<Model>();
-	model3->Load("AW101.obj");
+	//std::shared_ptr<Model> model3 = std::make_shared<Model>();
+	//model3->Load("Models/AW101.obj");
+#pragma endregion
 
 	std::vector<std::unique_ptr<Actor>> actors;
 
-	//for (int i = 0; i < 1; i++)
-	//{
-		Transform transform1{ { 0, 0, 0 }, glm::vec3{45, 0, 0}, glm::vec3{1}};
-		std::unique_ptr<Actor> actor1 = std::make_unique<Actor>(transform1, model1);
-		actor1->SetColor({ 255, 255, 255, 255 });
-		actors.push_back(std::move(actor1));
+	Transform transform1{ glm::vec3{ 0 }, glm::vec3{ 5 }, glm::vec3{1}};
+	std::unique_ptr<Actor> actor1 = std::make_unique<Actor>(transform1, model1);
+	actors.push_back(std::move(actor1));
 
-		Transform transform2{ { 0, -50, 50 }, glm::vec3{-45, 180, 0}, glm::vec3{0.5} };
-		std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2);
-		actor2->SetColor({ 255, 255, 0, 255 });
-		actors.push_back(std::move(actor2));
+#pragma region ModelDraw
+	//Transform transform2{ { 0, -50, 50 }, glm::vec3{-45, 180, 0}, glm::vec3{0.5} };
+	//std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model2);
+	//actor2->SetColor({ 255, 255, 0, 255 });
+	//actors.push_back(std::move(actor2));
 
-		Transform transform3{ { 0, -25, 25 }, glm::vec3{0, 90, 0}, glm::vec3{0.25} };
-		std::unique_ptr<Actor> actor3 = std::make_unique<Actor>(transform3, model3);
-		actor3->SetColor({ 0, 0, 0, 255 });
-		actors.push_back(std::move(actor3));
-	//}
+	//Transform transform3{ { 0, -25, 25 }, glm::vec3{0, 90, 0}, glm::vec3{0.25} };
+	//std::unique_ptr<Actor> actor3 = std::make_unique<Actor>(transform3, model3);
+	//actor3->SetColor({ 0, 0, 0, 255 });
+	//actors.push_back(std::move(actor3));
+#pragma endregion
 
 #pragma region imageLoad
-	Image image;
-	image.Load("clouds.jpeg");
+	//Image image;
+	//image.Load("clouds.jpeg");
 
-	//Image imageAlpha;
-	//imageAlpha.Load("colors.png");
-	//PostProcess::Alpha(imageAlpha.m_buffer, 128);
 #pragma endregion
 
 	bool quit = false;
@@ -117,7 +124,7 @@ int main(int argc, char* argv[])
 		//}
 	
 		SetBlendMode(BlendMode::Normal);
-		framebuffer.DrawImage(0, 0, image);
+		//framebuffer.DrawImage(0, 0, image);
 
 		//SetBlendMode(BlendMode::Alpha);
 		//framebuffer.DrawImage(80, 100, imageAlpha);
@@ -179,10 +186,11 @@ int main(int argc, char* argv[])
 		}
 
 		camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
+		VertexShader::uniforms.view = camera.GetView();
 
 		for (auto& actor : actors)
 		{
-			actor->Draw(framebuffer, camera);
+			actor->Draw();
 		}
 
 		framebuffer.Update();

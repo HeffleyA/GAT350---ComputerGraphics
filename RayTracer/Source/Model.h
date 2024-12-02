@@ -19,7 +19,7 @@ public:
 	bool Hit(const ray_t& ray, raycastHit_t& raycastHit, float minDistance, float maxDistance) override;
 
 private:
-	vertices_t m_vertices;
+	vertices_t m_vb;
 	vertices_t m_local_vertices;
 
 	// sphere raycast check

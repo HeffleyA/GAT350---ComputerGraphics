@@ -12,18 +12,18 @@ void Model::Update()
 {
 	for (size_t i = 0; i < m_local_vertices.size(); i++)
 	{
-		m_vertices[i] = m_transform * glm::vec4{ m_local_vertices[i], 1};
+		m_vb[i] = m_transform * glm::vec4{ m_local_vertices[i], 1};
 	}
 
 	m_center = glm::vec3{ 0 };
-	for (auto& vertex : m_vertices)
+	for (auto& vertex : m_vb)
 	{
 		m_center += vertex;
 	}
-	m_center /= (float)m_vertices.size();
+	m_center /= (float)m_vb.size();
 
 	m_radius = 0;
-	for (auto& vertex : m_vertices)
+	for (auto& vertex : m_vb)
 	{
 		float radius = glm::length(vertex - m_center);
 		m_radius = glm::max(radius, m_radius);
@@ -96,7 +96,7 @@ bool Model::Load(const std::string& filename)
 			}
 		}
 
-		m_vertices.resize(m_local_vertices.size());
+		m_vb.resize(m_local_vertices.size());
 		stream.close();
 
 		return true;
@@ -111,18 +111,18 @@ bool Model::Hit(const ray_t& ray, raycastHit_t& raycastHit, float minDistance, f
 	}
 
 	// check cast ray with mesh triangles 
-	for (size_t i = 0; i < m_vertices.size(); i += 3)
+	for (size_t i = 0; i < m_vb.size(); i += 3)
 	{
 		float t;
-		if (Triangle::Raycast(ray, m_vertices[i], m_vertices[i + 1], m_vertices[i + 2], minDistance, maxDistance, t))
+		if (Triangle::Raycast(ray, m_vb[i], m_vb[i + 1], m_vb[i + 2], minDistance, maxDistance, t))
 		{
 			// set raycast hit
 			raycastHit.distance = t;
 			raycastHit.point = ray.at(t);
 
 			// set edges of the triangle
-			glm::vec3 edge1 = m_vertices[i + 1] - m_vertices[i];
-			glm::vec3 edge2 = m_vertices[i + 2] - m_vertices[i];
+			glm::vec3 edge1 = m_vb[i + 1] - m_vb[i];
+			glm::vec3 edge2 = m_vb[i + 2] - m_vb[i];
 
 			// calculate triangle normal (edge1 x edge2) [x = cross product]
 			raycastHit.normal = glm::normalize(Cross(edge1, edge2));
