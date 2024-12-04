@@ -170,6 +170,7 @@
     <ClInclude Include="Source\Image.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\Light.h" />
+    <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\MathUtils.h" />
     <ClInclude Include="Source\Model.h" />
     <ClInclude Include="Source\PostProcess.h" />

@@ -41,12 +41,22 @@ int main(int argc, char* argv[])
 	Transform cameraTransform{ { 0, 0, -20 } };
 
 	// shader
-	VertexShader::uniforms.view = camera.GetView();
-	VertexShader::uniforms.projection = camera.GetProjection();
-	VertexShader::uniforms.ambient = color3_t{ 0.01f };
-	VertexShader::uniforms.light.position = glm::vec3{ 10, 10, -10 };
-	VertexShader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
-	VertexShader::uniforms.light.color = color3_t{ 1 }; // white light
+	Shader::uniforms.view = camera.GetView();
+	Shader::uniforms.projection = camera.GetProjection();
+	Shader::uniforms.ambient = color3_t{ 0.01f };
+	Shader::uniforms.light.position = glm::vec3{ 0, 5, 0 };
+	Shader::uniforms.light.direction = glm::vec3{ 0, -1, 0 }; // light pointing down
+	Shader::uniforms.light.color = color3_t{ 1 }; // white light
+
+	std::shared_ptr<material_t> material = std::make_shared<material_t>();
+	material->albedo = color3_t{ 0, 0, 1 };
+	material->specular = color3_t{ 1 };
+	material->shininess = 32.0f;
+
+	std::shared_ptr<material_t> material2 = std::make_shared<material_t>();
+	material2->albedo = color3_t{ 1, 0, 0 };
+	material2->specular = color3_t{ 0 };
+	material2->shininess = 32.0f;
 
 	Shader::framebuffer = &framebuffer;
 
@@ -64,9 +74,13 @@ int main(int argc, char* argv[])
 
 	std::vector<std::unique_ptr<Actor>> actors;
 
-	Transform transform1{ glm::vec3{ 0 }, glm::vec3{ 5 }, glm::vec3{1}};
-	std::unique_ptr<Actor> actor1 = std::make_unique<Actor>(transform1, model1);
+	Transform transform1{ glm::vec3{ 0 }, glm::vec3{ 0 }, glm::vec3{ 1 }};
+	std::unique_ptr<Actor> actor1 = std::make_unique<Actor>(transform1, model1, material);
 	actors.push_back(std::move(actor1));
+
+	Transform transform2{ glm::vec3{ 10, 0, 0 }, glm::vec3{ 0 }, glm::vec3{ 1 } };
+	std::unique_ptr<Actor> actor2 = std::make_unique<Actor>(transform2, model1, material2);
+	actors.push_back(std::move(actor2));
 
 #pragma region ModelDraw
 	//Transform transform2{ { 0, -50, 50 }, glm::vec3{-45, 180, 0}, glm::vec3{0.5} };
@@ -186,7 +200,7 @@ int main(int argc, char* argv[])
 		}
 
 		camera.SetView(cameraTransform.position, cameraTransform.position + cameraTransform.GetForward());
-		VertexShader::uniforms.view = camera.GetView();
+		Shader::uniforms.view = camera.GetView();
 
 		for (auto& actor : actors)
 		{

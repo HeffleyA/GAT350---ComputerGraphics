@@ -49,17 +49,18 @@ namespace Rasterizer
 
 				if (w0 >= 0 && w1 >= 0 && w2 >= 0) 
 				{
-					// interpolate vertex attributes
-					color3_t color = w0 * v0.color + w1 * v1.color + w2 * v2.color;
-					float z = v0.position.z * w0 + v1.position.z * w1 + v2.position.z * w2; //<use v0, v1 and v2 position.z, interpolate using w0, w1 and w2 like color above>
-
 					// check z-buffer
+					float z = v0.position.z * w0 + v1.position.z * w1 + v2.position.z * w2; 
 					if (CheckDepth(framebuffer, p, z)) WriteDepth(framebuffer, p, z);
 					else continue;
 
 					// create fragment shader input
+					// interpolate vertex attributes
 					fragment_input_t fragment;
-					fragment.color = color4_t{ color, 1 };
+					//color3_t color = w0 * v0.color + w1 * v1.color + w2 * v2.color;
+					fragment.position = w0 * v0.position + w1 * v1.position + w2 * v2.position;
+					fragment.normal = w0 * v0.normal + w1 * v1.normal + w2 * v2.normal;
+					//fragment.color = color4_t{ color, 1 };
 					
 					// call fragment shader
 					color4_t output_color = FragmentShader::Process(fragment);

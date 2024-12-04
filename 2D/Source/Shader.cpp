@@ -2,6 +2,14 @@
 #include "Framebuffer.h"
 #include "Rasterizer.h"
 
+Shader::uniforms_t Shader::uniforms =
+{
+	glm::mat4{ 1 }, //model
+	glm::mat4{ 1 }, //view
+	glm::mat4{ 1 }, //projection
+	color3_t{ 1 }
+};
+
 Framebuffer* Shader::framebuffer{ nullptr };
 Shader::eFrontFace Shader::front_face = Shader::eFrontFace::CCW;
 Shader::eCullMode Shader::cull_mode = Shader::eCullMode::BACK;
