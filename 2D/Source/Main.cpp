@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 	Shader::framebuffer = &framebuffer;
 
 	std::shared_ptr<Model> model1 = std::make_shared<Model>();
-	model1->Load("Models/Cube.obj");
+	model1->Load("Models/teapot.obj");
 	model1->SetColor({ 0, 0, 1, 1 });
 
 #pragma region ModelLoad
@@ -190,6 +190,7 @@ int main(int argc, char* argv[])
 
 		for (auto& actor : actors)
 		{
+			actor->GetTransform().rotation.y += time.GetDeltaTime() * 90;
 			actor->Draw();
 		}
 
