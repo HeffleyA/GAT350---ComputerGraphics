@@ -24,12 +24,14 @@ glm: A C++ mathematics library for graphics software, providing easy-to-use tool
 Features
 
 <img width="602" alt="SoftwareRenderer" src="https://github.com/user-attachments/assets/5d1a8498-c6ee-42be-b44c-8e91c15b231b">
+
 Software Renderer:
 Gouraud and Phong lighting models for realistic shading.
 Basic rendering pipeline with vertex and fragment shaders.
 Post-processing effects like bloom or depth of field (if applicable).
 
 <img width="601" alt="RayTracer" src="https://github.com/user-attachments/assets/128d6437-e6fa-4b3e-8659-00bf6f3c1639">
+
 Ray Tracer:
 Support for different materials with realistic shading.
 Anti-aliasing to enhance image quality.
