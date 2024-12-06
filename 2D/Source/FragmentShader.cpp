@@ -7,10 +7,10 @@ color4_t FragmentShader::Process(const fragment_input_t& fragment)
 	glm::vec3 light_position = Shader::uniforms.view * glm::vec4{ Shader::uniforms.light.position, 1 };
 	glm::vec3 light_direction = Shader::uniforms.view * glm::vec4{ -Shader::uniforms.light.direction, 0 };
 	//glm::vec3 vposition = mv * glm::vec4{ fragment.position, 1 };
-	//glm::vec3 light_dir = glm::normalize(light_position - fragment.position);
+	glm::vec3 light_dir = glm::normalize(light_position - fragment.position);
 
 	//directional light
-	glm::vec3 light_dir = glm::normalize(light_direction);
+	//glm::vec3 light_dir = glm::normalize(light_direction);
 
 	//diffuse
 	float intensity = std::max(0.0f, glm::dot(light_dir, fragment.normal));
